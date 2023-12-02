@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styleMultiplereCaptcha.css">
+    <script type="text/javascript"></script>
+    <script>
+        var verifyCallback = (response) => {
+            alert("reCAPTCHA response: " + response);
+        }
+        var widgetId1, widgetId2, widgetId3;
+        //function to render each reCAPTCHA widget
+        var onloadCallBack = () => {
+            widgetId1 = grecaptcha.render('example1' , {
+                'sitekey' : '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI',
+            });
+            widgetId2 = grecaptcha.render('example2', {
+                'sitekey' : '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI',
+            })
+            widgetId3 = grecaptcha.render('example3', {
+                'sitekey' : '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI',
+            })
+         }
+
+        //form submission handeling
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            let response1 = grecaptcha.getResponse(widgetId1);
+            let response2 = grecaptcha.getResponse(widgetId2);
+            let response3 = grecaptcha.getResponse(widgetId3);
+
+            if(response1) {
+                alert("Response from widget 1" + response1)
+            } else if (response2) {
+                grecaptcha.reset(widgetId2);
+                alert("Widget 2 has been reset !");
+            } else if (response3) {
+                alert('Response from widget 3' + response3)
+            } else {
+                alert('No reCaptcha sovled.');
+            }
+
+        }
+    </script>
+    <title>multiple reCaptcha</title>
+</head>
+<body>
+    <!-- resetting recaptcha upon submission -->
+    <form onsubmit="handleFormSubmit(event)" >
+        <label for="fname">First Name:</label>
+        <input type="text" name="fname" id="fname">
+        <label for="lname">Last Name:</label>
+        <input type="text" name="lname" id="lname">
+        <label for="email">Email:</label>
+        <input type="email" name="email" id="email">
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password">
+        <div id="example1"></div>
+        <div id="example2"></div>
+        <div id="example3"></div>
+        <input type="submit" value="Submit Form">
+    </form>
+    <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallBack&render=explicit" async defer> </script>
+</body>
+</html>
