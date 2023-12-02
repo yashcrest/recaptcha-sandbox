@@ -4,34 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>reCAPTCHA</title>
-    <script type="text/javascript">
-        var onloadCallBack = function () {  
-            var recaptchaRendered = false
-            var checklists = () => {
-                let fname = document.getElementById('fname').value;
-                let lname = document.getElementById('lname').value;
-                let email = document.getElementById('email').value;
-                let password = document.getElementById('password').value;
-
-           if(fname && lname && email && password) {
-               grecaptcha.render('recaptcha', {
-                   'sitekey' : '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI',
-               },
-               )
-               recaptchaRendered = true;
-           } 
-        }
-        document.getElementById('fname').addEventListener('input' , checklists)
-        document.getElementById('lname').addEventListener('input' , checklists)
-        document.getElementById('email').addEventListener('input' , checklists)
-        document.getElementById('password').addEventListener('input' , checklists)
-        }
-    </script>
-    <script src="app.js"></script>
     <link rel="stylesheet" href="style.css">
+    <script type="text/javascript" async defer>
+        var onloadCallBack = function () {  
+            //rendering the reCaptcha widget
+            grecaptcha.render('recaptcha', {
+                'sitekey' : '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI',
+            })
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            var form = document.getElementById('form');
+            let fname = document.getElementById('fname').value;
+            let lname = document.getElementById('lname').value;
+            let email = document.getElementById('email').value;
+            let password = document.getElementById('password').value;
+            let recaptchaResponse = grecaptcha.getResponse();
+
+            //validation form inputs 
+            if(!fname || !lname || !email || !password){
+                alert("Please fill out all fields");
+                return;
+            }
+
+            //check if email is valid
+            var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if(!emailRegex.test(email)){
+                alert('Please enter a valid email address.')
+                return
+            }
+
+            //check if reCaptcha is solved
+            if (!recaptchaResponse) {
+                alert('Please solve ReCaptcha.');
+                return;
+            }
+
+            //if all validation pass, submit the form
+            form.submit();
+        }
+
+        document.getElementById('form').addEventListener('submit' , handleFormSubmit)
+    </script>
 </head>
 <body>
-    <form action="?" method="POST" id="form">
+    <form action="http://lolcahost:3000/submit-form" method="POST" id="form">
         <label for="fname">First name:</label><br>
         <input type="text" id="fname" name="fname"><br>
         <label for="lname">Last name:</label><br>
@@ -41,7 +59,7 @@
         <label for="lname">Password:</label><br>
         <input type="password" id="password" name="password"><br>
         <div id="recaptcha"></div>
-        <input type="submit" value="Submit">
+        <input type="submit" value="Submit" id="submit" style="margin: 1em;">
     </form>
     <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallBack&render=explicit" async defer></script>
 </body>

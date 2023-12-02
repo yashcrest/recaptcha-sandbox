@@ -6,9 +6,6 @@
     <link rel="stylesheet" href="styleMultiplereCaptcha.css">
     <script type="text/javascript"></script>
     <script>
-        var verifyCallback = (response) => {
-            alert("reCAPTCHA response: " + response);
-        }
         var widgetId1, widgetId2, widgetId3;
         //function to render each reCAPTCHA widget
         var onloadCallBack = () => {
@@ -41,14 +38,13 @@
             } else {
                 alert('No reCaptcha sovled.');
             }
-
         }
     </script>
     <title>multiple reCaptcha</title>
 </head>
 <body>
     <!-- resetting recaptcha upon submission -->
-    <form onsubmit="handleFormSubmit(event)" >
+    <form onsubmit="handleFormSubmit(event)" method="POST">
         <label for="fname">First Name:</label>
         <input type="text" name="fname" id="fname">
         <label for="lname">Last Name:</label>
