@@ -8,9 +8,7 @@ app.use(express.json());
 
 //handling the post request from client
 app.post('/submit-form' , async (req, res) => {
-    res.send({
-        "result" : "Form submitted!"
-    })
+    
 })
 
 
