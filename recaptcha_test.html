@@ -5,6 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>reCAPTCHA</title>
     <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <form action="http://localhost:3000/submit-form" method="POST" id="form">
+        <label for="fname">First name:</label><br>
+        <input type="text" id="fname" name="fname"><br>
+        <label for="lname">Last name:</label><br>
+        <input type="text" id="lname" name="lname"><br>
+        <label for="lname">Email:</label><br>
+        <input type="email" id="email" name="email"><br>
+        <label for="lname">Password:</label><br>
+        <input type="password" id="password" name="password"><br>
+        <div id="recaptcha"></div>
+        <input type="submit" value="Submit" style="margin: 1em;">
+    </form>
+    <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallBack&render=explicit" async defer></script>
+    <!-- form & reCaptcha validation -->
     <script type="text/javascript" async defer>
         var onloadCallBack = function () {  
             //rendering the reCaptcha widget
@@ -47,20 +63,5 @@
 
         document.getElementById('form').addEventListener('submit' , handleFormSubmit)
     </script>
-</head>
-<body>
-    <form action="http://lolcahost:3000/submit-form" method="POST" id="form">
-        <label for="fname">First name:</label><br>
-        <input type="text" id="fname" name="fname"><br>
-        <label for="lname">Last name:</label><br>
-        <input type="text" id="lname" name="lname"><br>
-        <label for="lname">Email:</label><br>
-        <input type="email" id="email" name="email"><br>
-        <label for="lname">Password:</label><br>
-        <input type="password" id="password" name="password"><br>
-        <div id="recaptcha"></div>
-        <input type="submit" value="Submit" id="submit" style="margin: 1em;">
-    </form>
-    <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallBack&render=explicit" async defer></script>
 </body>
 </html>

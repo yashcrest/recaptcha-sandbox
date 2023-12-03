@@ -1,6 +1,17 @@
 const express = require('express');
 const app = express();
+const port = 3000 || process.env.PORT
 
-app.post('/submit-form' , {
-    
+
+//body parser middleware, since express now comes with body-parser middle by default we don't need to use the body-parser npm package.
+app.use(express.json());
+
+//handling the post request from client
+app.post('/submit-form' , async (req, res) => {
+    res.send({
+        "result" : "Form submitted!"
+    })
 })
+
+
+app.listen(port, () => console.log(`Server running port ${port}`));
