@@ -16,10 +16,22 @@ app.post('/submit-form' , async (req, res) => {
 
 
     //verify the token with Google's recaptcha API
-    const googleVerifyUrl = `https://www.google.com/recaptcha/api/siteverify/?secret=${secretKey}&response=${recaptchaToken}`;
-    const response = await fetch(googleVerifyUrl, {method: 'POST'});
-    console.log(response);
-    const data = await response.text();
+    const googleVerifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
+    const params = new URLSearchParams();
+    params.append('secret', secretKey);
+    params.append('response', recaptchaToken);
+    
+    //sending the api call
+    const response = await fetch(googleVerifyUrl, {
+        method : 'POST',
+        headers : {
+            'Content-Type' : 'application/x-www-form-urlencoded'
+        },
+        body: params
+    });
+    console.log("response: " , response);
+    const data = await response.json();
+    console.log("data: " , data);
 
     if(data.success) {
         // still need to write the logic of saving the form data into DB.
