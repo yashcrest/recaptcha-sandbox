@@ -20,7 +20,7 @@ app.post('/submit-form' , async (req, res) => {
     const params = new URLSearchParams();
     params.append('secret', secretKey);
     params.append('response', recaptchaToken);
-    
+
     //sending the api call
     const response = await fetch(googleVerifyUrl, {
         method : 'POST',
