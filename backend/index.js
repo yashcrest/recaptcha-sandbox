@@ -1,10 +1,10 @@
 const express = require('express')
 const fetch = require('node-fetch');
+const sqlite3 = require('sqlite3');
 require('dotenv').config();
 const app = express();
 const path = require('path');
 const port = 3000 || process.env.PORT
-
 
 //body parser middleware, since express now comes with body-parser middle by default we don't need to use the body-parser npm package.
 app.use(express.json());
@@ -12,6 +12,34 @@ app.use(express.urlencoded({extended: true}));
 
 //static files middleware
 app.use(express.static('public'));
+
+
+
+//initialize sqlite database
+const db = new sqlite3.Database('./mydatabase.db' ,(err) => {
+    if (err) {
+        console.error(err.message);
+    } 
+    console.log('Connected to db');
+})
+
+//db logic
+db.serialize(() => {
+    db.run(`CREATE TABLE IF NOT EXISTS users(
+        id INTEGER KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        email TEXT NOT NULL
+    )`, (err) => {
+        if (err) {
+            console.error(err.message);
+        } else {
+            console.log('Table created or already exists');
+        }
+    })
+})
+
+
+
 
 //handling the post request from client
 app.post('/submit-form' , async (req, res) => {
