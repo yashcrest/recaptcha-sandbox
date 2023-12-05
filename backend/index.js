@@ -10,6 +10,9 @@ const port = 3000 || process.env.PORT
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
+//static files middleware
+app.use(express.static('public'));
+
 //handling the post request from client
 app.post('/submit-form' , async (req, res) => {
     const recaptchaToken = req.body['g-recaptcha-response']; // you can view google documentation for this.
