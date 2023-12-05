@@ -2,6 +2,7 @@ const express = require('express')
 const fetch = require('node-fetch');
 require('dotenv').config();
 const app = express();
+const path = require('path');
 const port = 3000 || process.env.PORT
 
 
@@ -35,9 +36,9 @@ app.post('/submit-form' , async (req, res) => {
 
     if(data.success) {
         // still need to write the logic of saving the form data into DB.
-        res.send('Form received and recaptcha verified!')
+        res.sendFile(path.join(__dirname, 'views', 'success.html'));
     } else {
-        res.send('recaptcha verification failed');
+        res.sendFile(path.join(__dirname, 'views', 'failed.html'));
     }
 })
 
