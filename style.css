@@ -39,6 +39,10 @@ form > label {
     font-size: 0.7em;
 }
 
+#recaptcha {
+    margin-top: 1em;
+}
+
 .submit-btn {
     padding: 0.7em;
     
