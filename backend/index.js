@@ -5,6 +5,10 @@ const app = express();
 const path = require('path');
 const port = 3000 || process.env.PORT
 
+
+//importing db to main file
+const db = require('./db');
+
 //body parser middleware, since express now comes with body-parser middle by default we don't need to use the body-parser npm package.
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
@@ -34,13 +38,24 @@ app.post('/submit-form' , async (req, res) => {
         },
         body: params
     });
-    console.log("response: " , response);
+    // console.log("response: " , response);
     const data = await response.json();
-    console.log("data: " , data);
+    // console.log("data: " , data);
 
     if(data.success) {
-        // still need to write the logic of saving the form data into DB.
-        res.sendFile(path.join(__dirname, 'views', 'success.html'));
+        //inserting data into database
+        const {fname, lname, email, password} = req.body;
+        const sql = `INSERT INTO users (fname, lname, email, password) VALUES(?, ?, ?, ?)`
+
+        db.run(sql, [fname, lname, email, password], function(err) {
+            if(err) {
+                console.error(err.message);
+                res.status(500).send('database ma save garda error ayo');
+            } else {
+                console.log(`A row has been inserted with the rowid ${this.lastID}`);
+                res.sendFile(path.join(__dirname, 'views', 'success.html'));
+            }
+        })
     } else {
         res.sendFile(path.join(__dirname, 'views', 'failed.html'));
     }
