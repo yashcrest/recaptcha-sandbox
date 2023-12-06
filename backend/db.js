@@ -1,5 +1,5 @@
 const sqlite3 = require('sqlite3');
-
+const {v4 : uuid} = require('uuid');
 
 //initialize sqlite database
 const db = new sqlite3.Database('./mydatabase.db' ,(err) => {
@@ -9,8 +9,6 @@ const db = new sqlite3.Database('./mydatabase.db' ,(err) => {
     console.log('Connected to db');
 })
 
-
-//db logic
 db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS users(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -26,11 +24,5 @@ db.serialize(() => {
         }
     })
 })
-
-
-//function to handle form submission 
-function insertUser (fname, lname, email, password) {
-}
-
 
 module.exports = db;

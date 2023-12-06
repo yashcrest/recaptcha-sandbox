@@ -50,17 +50,30 @@ app.post('/submit-form' , async (req, res) => {
     if(data.success) {
         //inserting data into database
         const {fname, lname, email, password} = req.body;
-        const sql = `INSERT INTO users (fname, lname, email, password) VALUES(?, ?, ?, ?)`
 
-        db.run(sql, [fname, lname, email, password], function(err) {
-            if(err) {
-                console.error(err.message);
-                res.status(500).send('database ma save garda error ayo');
-            } else {
-                console.log(`A row has been inserted with the rowid ${this.lastID}`);
-                res.sendFile(path.join(__dirname, 'views', 'success.html'));
-            }
-        })
+        try {
+            //hashing password before saving in database
+            const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+            //SQL query statment
+            const sql = `INSERT INTO users (fname, lname, email, password) VALUES(?, ?, ?, ?)`;
+
+            // Inserting data into database
+            db.run(sql, [fname, lname, email, hashedPassword], function(err) {
+                if(err) {
+                    console.error(err.message);
+                    res.status(500).send('database ma save garda error ayo');
+                } else {
+                    console.log(`A row has been inserted with the rowid ${this.lastID}`);
+                    res.sendFile(path.join(__dirname, 'views', 'success.html'));
+                }
+            })
+
+        } catch(err) {
+            console.log(err);
+            res.status(500).send('Error while hashing the password');
+        }
+
     } else {
         res.sendFile(path.join(__dirname, 'views', 'failed.html'));
     }
