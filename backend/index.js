@@ -9,6 +9,11 @@ const port = 3000 || process.env.PORT
 //importing db to main file
 const db = require('./db');
 
+
+//adding password hashing npm module
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+
 //body parser middleware, since express now comes with body-parser middle by default we don't need to use the body-parser npm package.
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
