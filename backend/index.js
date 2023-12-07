@@ -1,83 +1,73 @@
-const express = require('express')
-const fetch = require('node-fetch');
-require('dotenv').config();
+const express = require("express");
+const fetch = require("node-fetch");
+require("dotenv").config();
 const app = express();
-const path = require('path');
-const port = 3000 || process.env.PORT
-
+const path = require("path");
+const port = 3000 || process.env.PORT;
 
 //importing db to main file
-const db = require('./db');
-
+const db = require("./db");
 
 //adding password hashing npm module
-const bcrypt = require('bcrypt');
+const bcrypt = require("bcrypt");
 const saltRounds = 10;
 
 //body parser middleware, since express now comes with body-parser middle by default we don't need to use the body-parser npm package.
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 
 //static files middleware
-app.use(express.static('public'));
-
-
+app.use(express.static("public"));
 
 //handling the post request from client
-app.post('/submit-form' , async (req, res) => {
-    const recaptchaToken = req.body['g-recaptcha-response']; // you can view google documentation for this.
-    const secretKey = process.env.SECRET_KEY;
+app.post("/submit-form", async (req, res) => {
+  const recaptchaToken = req.body["g-recaptcha-response"]; // you can view google documentation for this.
+  const secretKey = process.env.SECRET_KEY;
 
+  //verify the token with Google's recaptcha API
+  const googleVerifyUrl = "https://www.google.com/recaptcha/api/siteverify";
+  const params = new URLSearchParams();
+  params.append("secret", secretKey);
+  params.append("response", recaptchaToken);
 
-    //verify the token with Google's recaptcha API
-    const googleVerifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
-    const params = new URLSearchParams();
-    params.append('secret', secretKey);
-    params.append('response', recaptchaToken);
+  //sending the api call
+  const response = await fetch(googleVerifyUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: params,
+  });
+  const data = await response.json();
 
-    //sending the api call
-    const response = await fetch(googleVerifyUrl, {
-        method : 'POST',
-        headers : {
-            'Content-Type' : 'application/x-www-form-urlencoded'
-        },
-        body: params
-    });
-    // console.log("response: " , response);
-    const data = await response.json();
-    // console.log("data: " , data);
+  if (data.success) {
+    //inserting data into database
+    const { fname, lname, email, password } = req.body;
 
-    if(data.success) {
-        //inserting data into database
-        const {fname, lname, email, password} = req.body;
+    try {
+      //hashing password before saving in database
+      const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-        try {
-            //hashing password before saving in database
-            const hashedPassword = await bcrypt.hash(password, saltRounds);
+      //SQL query statment
+      const sql = `INSERT INTO users (fname, lname, email, password) VALUES(?, ?, ?, ?)`;
 
-            //SQL query statment
-            const sql = `INSERT INTO users (fname, lname, email, password) VALUES(?, ?, ?, ?)`;
-
-            // Inserting data into database
-            db.run(sql, [fname, lname, email, hashedPassword], function(err) {
-                if(err) {
-                    console.error(err.message);
-                    res.status(500).send('database ma save garda error ayo');
-                } else {
-                    console.log(`A row has been inserted with the rowid ${this.lastID}`);
-                    res.sendFile(path.join(__dirname, 'views', 'success.html'));
-                }
-            })
-
-        } catch(err) {
-            console.log(err);
-            res.status(500).send('Error while hashing the password');
+      // Inserting data into database
+      db.run(sql, [fname, lname, email, hashedPassword], function (err) {
+        if (err) {
+          console.error(err.message);
+          res.status(500).send("database ma save garda error ayo");
+        } else {
+          console.log(`A row has been inserted with the rowid ${this.lastID}`);
+          res.sendFile(path.join(__dirname, "views", "success.html"));
         }
-
-    } else {
-        res.sendFile(path.join(__dirname, 'views', 'failed.html'));
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(500).send("Error while hashing the password");
     }
-})
-
+  } else {
+    res.sendFile(path.join(__dirname, "views", "failed.html"));
+  }
+});
 
 app.listen(port, () => console.log(`Server running port ${port}`));
