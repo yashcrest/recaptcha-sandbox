@@ -71,7 +71,7 @@ app.post("/submit-form", async (req, res) => {
 });
 
 //getting data from db
-app.get("get-users", (req, res) => {
+app.get("/get-users", (req, res) => {
   const sql = "SELECT * FROM users";
   db.all(sql, [], (err, rows) => {
     if (err) {

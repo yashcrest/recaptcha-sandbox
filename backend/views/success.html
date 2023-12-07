@@ -9,12 +9,13 @@
   <body>
     <div class="msg">
       <h1>reCaptcha Solved Successfully and form submitted!</h1>
+      <div id="usersTable"></div>
     </div>
 
     <!-- script to display db data in table format -->
     <script>
       window.onload = function () {
-        fetch("/get-usres")
+        fetch("/get-users")
           .then((response) => response.json())
           .then((data) => {
             const table = createTable(data);
