@@ -70,4 +70,16 @@ app.post("/submit-form", async (req, res) => {
   }
 });
 
+//getting data from db
+app.get("get-users", (req, res) => {
+  const sql = "SELECT * FROM users";
+  db.all(sql, [], (err, rows) => {
+    if (err) {
+      res.status(500).send("Eror fetching data");
+      return;
+    }
+    res.json(rows);
+  });
+});
+
 app.listen(port, () => console.log(`Server running port ${port}`));
