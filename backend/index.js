@@ -82,4 +82,17 @@ app.get("/get-users", (req, res) => {
   });
 });
 
+//endpoint to delete the data
+app.delete("delete-user/:id", (req, res) => {
+  const userID = req.params.id;
+  const sql = "DELETE FROM users WHERE id = ?";
+
+  db.run(sql, userId, function (err) {
+    if (err) {
+      res.status(500).json({ success: false, message: "Error deleting user" });
+      return;
+    }
+    res.json({ success: true, message: `User with ID ${userID} deleted` });
+  });
+});
 app.listen(port, () => console.log(`Server running port ${port}`));

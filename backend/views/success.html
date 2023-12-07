@@ -30,7 +30,7 @@
 
         //add table headers
         const headerRow = table.insertRow();
-        ["First Name", "Last Name", "Email"].forEach((headerText) => {
+        ["First Name", "Last Name", "Email", "Button"].forEach((headerText) => {
           let header = document.createElement("th");
           header.textContent = headerText;
           headerRow.appendChild(header);
@@ -43,8 +43,30 @@
             const cell = row.insertCell();
             cell.textContent = user[column];
           });
+          const deleteCell = row.insertCell();
+          const deleteBtn = document.createElement("button");
+          deleteBtn.textContent = "X";
+          deleteBtn.onclick = function () {
+            deleteRow(user.id);
+          };
+          deleteCell.appendChild(deleteBtn);
         });
         return table;
+      }
+
+      //function to delete row
+      function deleteRow(userID) {
+        fetch(`delete-user/${userID}`, { method: "DELETE" })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              // logic to remove row from ui
+              window.location.reload();
+            } else {
+              console.error("Failed to delete user");
+            }
+          })
+          .catch((error) => console.error("Erorr : ", error));
       }
     </script>
   </body>
