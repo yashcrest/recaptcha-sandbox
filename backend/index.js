@@ -39,6 +39,7 @@ app.post("/submit-form", async (req, res) => {
     body: params,
   });
   const data = await response.json();
+  console.log(data);
 
   if (data.success) {
     //inserting data into database
