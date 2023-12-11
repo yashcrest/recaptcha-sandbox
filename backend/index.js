@@ -39,7 +39,7 @@ app.post("/submit-form", async (req, res) => {
     body: params,
   });
   const data = await response.json();
-  console.log(data);
+  console.log("data : ", data);
 
   if (data.success) {
     //inserting data into database
@@ -88,7 +88,7 @@ app.delete("delete-user/:id", (req, res) => {
   const userID = req.params.id;
   const sql = "DELETE FROM users WHERE id = ?";
 
-  db.run(sql, userId, function (err) {
+  db.run(sql, userID, function (err) {
     if (err) {
       res.status(500).json({ success: false, message: "Error deleting user" });
       return;
