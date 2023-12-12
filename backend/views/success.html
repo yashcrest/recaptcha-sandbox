@@ -56,14 +56,16 @@
 
       //function to delete row
       function deleteRow(userID) {
-        fetch(`delete-user/${userID}`, { method: "DELETE" })
-          .then((response) => response.json())
+        fetch(`/delete-user/${userID}`, { method: "DELETE" })
+          .then((response) => {
+            console.log(response);
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            return response.json();
+          })
           .then((data) => {
             if (data.success) {
-              // logic to remove row from ui
-
-              //removing the table row logic is still pending
-
               window.location.reload();
             } else {
               console.error("Failed to delete user");

@@ -84,7 +84,7 @@ app.get("/get-users", (req, res) => {
 });
 
 //endpoint to delete the data
-app.delete("delete-user/:id", (req, res) => {
+app.delete("/delete-user/:id", (req, res) => {
   const userID = req.params.id;
   const sql = "DELETE FROM users WHERE id = ?";
 
