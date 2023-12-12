@@ -18,8 +18,8 @@
         fetch("/get-users")
           .then((response) => response.json())
           .then((data) => {
-            const table = createTable(data);
-            document.getElementById("usersTable").appendChild(table);
+            const content = createTable(data);
+            document.getElementById("usersTable").appendChild(content);
           })
           .catch((error) => console.log("Error", error));
       };
@@ -70,6 +70,13 @@
               //removing the row from the table
               const row = document.getElementById(rowID);
               row.parentNode.removeChild(row);
+
+              //Checking if the table is empty
+              const table = document.querySelector("#usersTable table");
+              if (!table || table.rows.length === 1) {
+                document.getElementById("usersTable").innerHTML =
+                  "<p>No users to display</p>";
+              }
             } else {
               console.error("Failed to delete user");
             }
